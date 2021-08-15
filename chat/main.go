@@ -25,9 +25,14 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	templateFile := "chat.html"
 	httpServerDescription := ":8080"
+	r := newRoom()
+
 	log.Printf("Serving the template file %s at %s\n", templateFile, httpServerDescription)
 
 	http.Handle("/", &templateHandler{filename: templateFile})
+	http.Handle("/room", r)
+
+	go r.run()
 
 	if err := http.ListenAndServe(httpServerDescription, nil); err != nil {
 		log.Fatal("ListenAnServe:", err)
